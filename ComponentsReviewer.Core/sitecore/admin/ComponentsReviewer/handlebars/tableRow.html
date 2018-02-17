@@ -1,0 +1,101 @@
+﻿<tr class="toImage">
+    <th scope="row">{{number}}</th>
+
+    <td>
+        <p>
+            <span class="activation-status {{#if IsActive}}active{{else}}deactivate{{/if}}" data-id="{{Id}}">
+                <i class="glyphicon glyphicon-ok-circle active" style="display: {{#if IsActive}}block{{else}}none{{/if}}"></i>
+                <i class="glyphicon glyphicon-remove-circle deactivate" style="display: {{#if IsActive}}none{{else}}block{{/if}}"></i>
+                <span class="active" style="display: {{#if IsActive}}block{{else}}none{{/if}}">Is Used</span>
+                <span class="deactivate"  style="display: {{#if IsActive}}none{{else}}block{{/if}}">Is not Used</span>
+            </span>
+            <span class="bugs-indicator {{#if HasBug}}deactivate{{else}}active{{/if}}" data-id="{{Id}}">
+                <i class="glyphicon glyphicon-thumbs-up active" style="display: {{#if HasBug}}none{{else}}block{{/if}}"></i>
+                <i class="glyphicon glyphicon-warning-sign deactivate" style="display: {{#if HasBug}}block{{else}}none{{/if}}"></i>
+
+                <span class="active" style="display: {{#if HasBug}}none{{else}}block{{/if}}">ready to use</span>
+                <span class="deactivate"  style="display: {{#if HasBug}}block{{else}}none{{/if}}">has problems</span>
+            </span>
+        </p>
+
+        <h4>{{Name}}</h4>
+        <div>{{Id}}</div>
+        <div>{{ItemPath}}</div>
+        <div>
+            {{#each Sites}}
+            <span class="label label-primary sites-option"> {{this}} </span>
+            {{/each}}
+        </div>
+        <br />
+        <div>
+            <img style="max-width: 90%" src="{{ImageUrl}}" />
+        </div>
+
+    </td>
+
+    <td>
+
+        <ul class="list-group">
+            <li class="list-group-item">
+            <div class="rendering-comments">
+                <h4><span class="label label-info">Comments: </span></h4>
+                <p class="">
+                    <i class="edit-comments glyphicon glyphicon-pencil"></i>
+                    <span class="comments-text">{{#update_html Comments}}{{/update_html}}</span>
+                </p>
+                <div class="comments-input hidden">
+                    <textarea multiple placeholder="Write comments here..." rows="5">{{Comments}}</textarea>
+
+                    <div>
+                        <button class="btn btn-success save-comments" data-id="{{Id}}">Save Comments</button>
+                        <button class="btn btn-default cancel-comments">cancel</button>
+                    </div>
+
+                </div>
+            </div>
+            </li>
+        </ul>
+
+
+        <ul class="list-group references">
+            <li class="list-group-item"> <div>The rendering is used <span class="label label-success">{{LinksCount}}</span> times</div></li>
+            {{#if LinksCount}} 
+            <li class="list-group-item first-link">
+                <div>
+                    <div class="open-page"><span class="label label-success">Page Url: </span> <span>{{Link.Url}}</span></div>
+                </div>
+            </li> 
+            <li class="list-group-item all-links hidden">
+                 
+            </li> 
+            <li class="list-group-item text-right show-all-references">
+                <button class="btn btn-success show-references" data-id="{{Id}}">Show all references   <i class="glyphicon glyphicon-plus"></i></button>
+                <button class="btn btn-danger hide-references hidden" data-id="{{Id}}">Hide references   <i class="glyphicon glyphicon-minus"></i></button>
+            </li>  
+            {{/if}}
+
+        </ul>
+
+        <!--{{#each Links}}
+        <div>
+            <div><div class="open-page"><span>{{Link.Url}}</span> <i class="glyphicon glyphicon-plus"></i></div></div>
+        </div>
+        {{/each}}-->
+
+        <div>
+            <ul class="list-group">
+                <li class="list-group-item"><span class="label label-default">File Path: </span> {{FilePath}}</li>
+            </ul>
+        </div>
+        <div>
+            <ul class="list-group">
+                <li class="list-group-item"><span class="label label-default">Datasource Location: </span> {{DatasourcePath}}</li>
+                <li class="list-group-item"><span class="label label-default">Rendering Props Name: </span> {{ParametersTemplateName}}</li>
+                <li class="list-group-item"><span class="label label-default">Template Path: </span> {{TemplatePath}}</li>
+            </ul>
+        </div>
+        <div>
+            <div class="comments"></div>
+        </div>
+    </td>
+</tr>

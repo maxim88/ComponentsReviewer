@@ -1,0 +1,43 @@
+﻿
+<table id="renderings-table" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">All Renderings</th>
+        <th scope="col">Have References</th>
+        <th scope="col">No References</th>
+        <th scope="col">To Fix</th>
+        <th scope="col">Have Thumbnail</th>
+        <th scope="col">No Thumbnail</th>
+        <th scope="col">Required Datasource</th>
+        <th scope="col">No Datasource</th> 
+    </tr>
+    </thead>
+    <tbody> 
+        <tr > 
+            <td>
+                {{allRenderings}}
+            </td>
+            <td>
+                {{usedOnPages}}
+            </td>
+            <td>
+                {{notUsed}}
+            </td>
+            <td>
+                {{hasBug}}
+            </td>
+            <td>
+                {{hasThumbnail}}
+            </td>
+            <td>
+                {{noThumbnail}}
+            </td>
+            <td>
+                {{hasDatasource}}
+            </td>
+            <td>
+                {{noDatasource}}
+            </td>
+        </tr> 
+    </tbody>
+</table>

@@ -1,0 +1,5 @@
+ComponentsReviewer.Core/obj/
+ComponentsReviewer.Core/packages/
+ComponentsReviewer.Core/bin/
+packages/
+.vs/

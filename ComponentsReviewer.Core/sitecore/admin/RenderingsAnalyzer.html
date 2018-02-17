@@ -1,0 +1,979 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/sitecore/admin/ComponentsReviewer/styles/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/sitecore/admin/ComponentsReviewer/styles/bootstrap/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/sitecore/admin/ComponentsReviewer/styles/plugins/checkbox/checkbox.css" />
+    <link rel="stylesheet" type="text/css" href="/sitecore/admin/ComponentsReviewer/styles/bootstrap/bootstrap-treeview.min.css" />
+    <link rel="stylesheet" type="text/css" href="/sitecore/admin/ComponentsReviewer/styles/plugins/tree/tree.css" />
+    <link rel="stylesheet" type="text/css" href="/sitecore/admin/ComponentsReviewer/styles/plugins/rte/simditor.css" />
+    <link rel="stylesheet" type="text/css" href="/sitecore/admin/ComponentsReviewer/styles/plugins/search/search.css" />
+
+    <script src="/sitecore/admin/ComponentsReviewer/scripts/jquery.min.js"></script>
+    <script src="/sitecore/admin/ComponentsReviewer/scripts/FileServer.js"></script>
+
+    <script src="/sitecore/admin/ComponentsReviewer/scripts/require.js"></script>
+<style>
+
+    #tempContainer {
+
+        width: 100%;
+    }
+     
+    .loader {
+        display: none;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        z-index: 100;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .loader .loader-container {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 101;
+        width: 300px;
+        height: 80px;
+    }
+
+    .loader-container .box {
+        background-color: rgba(0, 0, 0, 0.5);
+        width: 340px;
+        height: 100px;
+        padding: 20px 10px;
+        border-radius: 5px;
+        margin-left: -150px;
+        margin-top: -20px;
+        position: relative;
+        text-align: center;
+        color: azure;
+        font-weight: bold;
+    }
+
+    .filters-panels {
+        width: 100%;
+        background: grey;
+
+    }
+    .filters-container {
+        width: 700px;
+    }
+
+    .padding-10 {
+        padding: 10px
+    }
+
+    .open-page {
+        cursor: pointer
+    }
+
+    .margin-10 {
+        margin: 10px;
+    }
+
+    .sites-option {
+        margin: 10px 10px 10px 0;
+    }
+
+    .edit-comments {
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 18px;
+        color: green;
+    } 
+
+    textarea {
+        width:100%
+    }
+        
+
+
+    .bugs-indicator, .activation-status {
+        height: 55px;
+        width: 240px;
+        display: block;
+    }
+
+    .bugs-indicator i, .activation-status i {
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 34px;
+        float: left;
+    }
+
+    .bugs-indicator span, .activation-status span {
+        padding: 11px 0 20px 45px;
+        display: block;
+    } 
+
+    .bugs-indicator.active i, .activation-status.active i {
+        color: green;
+    }
+
+    .bugs-indicator.deactivate i, .activation-status.deactivate i {
+        color: red;
+    }
+
+    .activation-status.activeAll i {
+        color: green;
+    }
+
+    .activation-status.deactivateAll i {
+        color: red;
+    }
+
+    .margin-left-10 {
+        padding-left: 10px;
+    }
+    .padding-left-10 {
+        padding-left: 10px;
+    }
+
+    .padding-right-10 {
+        padding-right: 10px;
+    }
+
+    .color-red {
+        color: red;
+    }
+</style>
+     
+<script>
+    requirejs.config({
+        "waitSeconds": 60,
+        "paths": {
+            "jquery": "/sitecore/admin/ComponentsReviewer/scripts/jquery.min",
+            "bootstrap": "/sitecore/admin/ComponentsReviewer/scripts/bootstrap.min",
+            "bootstrap-bundle": "/sitecore/admin/ComponentsReviewer/scripts/bootstrap.bundle.min",
+            "bootstrap-treeview": "/sitecore/admin/ComponentsReviewer/scripts/bootstrap-treeview.min",
+            "popper": "/sitecore/admin/ComponentsReviewer/scripts/popper",
+            "bootstrap-checkbox": "/sitecore/admin/ComponentsReviewer/scripts/bootstrap-checkbox",
+            "handlebars": "/sitecore/admin/ComponentsReviewer/scripts/handlebars-v4.0.11",
+            "helper": "/sitecore/admin/ComponentsReviewer/scripts/helper",
+            "searchComponent": "/sitecore/admin/ComponentsReviewer/scripts/searchComponent",
+            "json2": "/sitecore/admin/ComponentsReviewer/scripts/json2",
+
+            "hbs": "/sitecore/admin/ComponentsReviewer/scripts/hbs",
+            "hbsplugin": "/sitecore/admin/ComponentsReviewer/scripts/hbsplugin",
+            "underscore": "/sitecore/admin/ComponentsReviewer/scripts/underscore",
+            "handlebarsruntime": "/sitecore/admin/ComponentsReviewer/scripts/handlebars.runtime-v4.0.11",
+
+            "html2canvas": "/sitecore/admin/ComponentsReviewer/scripts/html2canvas",
+            "adler": "/sitecore/admin/ComponentsReviewer/scripts/adler",
+            "zlib": "/sitecore/admin/ComponentsReviewer/scripts/zlib",
+            "png_support": "/sitecore/admin/ComponentsReviewer/scripts/png_support",
+            "png": "/sitecore/admin/ComponentsReviewer/scripts/png",
+            "pdfObj": "/sitecore/admin/ComponentsReviewer/scripts/pdfObj",
+            "jsPDF-addImage": "/sitecore/admin/ComponentsReviewer/scripts/addimage",
+            "deflate": "/sitecore/admin/ComponentsReviewer/scripts/deflate",
+            "jspdf-core": "/sitecore/admin/ComponentsReviewer/scripts/jspdf",
+            "fileServer": "/sitecore/admin/ComponentsReviewer/scripts/FileServer",
+
+            "epics": "/sitecore/admin/ComponentsReviewer/handlebars/epics",
+            "features": "/sitecore/admin/ComponentsReviewer/handlebars/features",
+            "baseFilters": "/sitecore/admin/ComponentsReviewer/handlebars/baseFilters",
+            "tableRow": "/sitecore/admin/ComponentsReviewer/handlebars/tableRow",
+            "statistics": "/sitecore/admin/ComponentsReviewer/handlebars/statistics",
+            "search": "/sitecore/admin/ComponentsReviewer/handlebars/search",
+
+            "simditor": "/sitecore/admin/ComponentsReviewer/scripts/plugins/rte/simditor",
+            "simple-hotkeys": "/sitecore/admin/ComponentsReviewer/scripts/plugins/rte/hotkeys",
+            "mobilecheck": "/sitecore/admin/ComponentsReviewer/scripts/plugins/rte/mobilecheck",
+            "simple-module": "/sitecore/admin/ComponentsReviewer/scripts/plugins/rte/module",
+            "simple-uploader": "/sitecore/admin/ComponentsReviewer/scripts/plugins/rte/uploader", 
+            "RTE": "/sitecore/admin/ComponentsReviewer/scripts/plugins/rte/page-demo"
+        },
+        hbs: { // optional
+            helpers: false, // default: true
+            templateExtension: 'html', // default: 'hbs'
+            partialsUrl: '/sitecore/admin/ComponentsReviewer/handlebars' // default: ''
+        },
+
+        "shim": {
+            "bootstrap": { "deps": ['jquery'] },
+            "datepicker": { "deps": ['bootstrap', 'jquery'] },
+            "hbsplugin": ["jquery", "handlebars"],
+            "handlebars": { 'exports': 'Handlebars' },
+            "png_support": { deps: ['jspdf-core', 'png', 'zlib', 'deflate'] },
+            'jsPDF-addImage': { deps: ['jspdf-core', 'png_support'] },
+            'simditor': { deps: ['simditor', 'simple-hotkeys', 'simple-uploader', 'simple-module', 'mobilecheck'] }
+          
+        }
+    });
+
+     
+    var jsPdfObj = {}
+
+    require(["handlebarsruntime"],
+        function (Handlebars) {
+            "use strict";
+            console.log(Handlebars); //undefined
+        });
+
+    require(["jquery", "helper", "hbs!tableRow", "hbs!statistics", "hbs!epics", "hbs!features", "hbs!baseFilters", "html2canvas", "searchComponent", "jsPDF-addImage",  "png", "bootstrap-bundle", "bootstrap-treeview"], function ($, helper, row, statisticsHbs, epicsHbs, categoriesHbs, baseFiltersHbs, convasApi, rte) {
+        'use strict';
+
+        $(".baseFilters").html(baseFiltersHbs());
+
+        var renderings = [];
+
+        var epics = [];
+
+        var categories = [];
+
+        var expectedFeatures = [];
+
+        var statistics = {}
+
+        var filters = {
+            isDeactivated: false,
+            isActive: false,
+            used: false,
+            notUsed: false,
+            hasDatasource: false,
+            noDatasource: false,
+            hasThumbnail: false,
+            noThumbnail: false
+        }
+
+        var selectePath = [];
+
+        var renderStaistics = function () {
+            $(".container-statistics").html(statisticsHbs(statistics));
+        }
+              
+        function getNames(list) {
+            var namesList = [];
+            $.each(list,
+                function (i, e) {
+                    if (!helper.isExist(e.Name, list)) {
+                        namesList.push(e.Name);
+                    }
+                });
+
+            return list;
+        }
+
+        function removeFromList(name, list) {
+            $.each(list,
+                function (i, e) {
+                    list.splice(i, 1);
+                });
+
+            return list;
+        }
+
+        function renderCategories(c) {
+            $(".categoriesFilter").html(categoriesHbs({ categories: c }));
+        }
+
+        function renderEpics(e) {
+             $(".epicsFilter").html(epicsHbs(e));
+        }
+
+        function updateStatistics(rendering) {
+            statistics.allRenderings = statistics.allRenderings + 1;
+            if (rendering.DatasourcePath) {
+                statistics.hasDatasource = statistics.hasDatasource + 1;
+            } else {
+                statistics.noDatasource = statistics.noDatasource + 1;
+            }
+            if (rendering.ImageUrl) {
+                statistics.hasThumbnail = statistics.hasThumbnail + 1;
+            } else {
+                statistics.noThumbnail = statistics.noThumbnail + 1;
+            }
+            if (rendering.Link && rendering.Link.Url) {
+                statistics.usedOnPages = statistics.usedOnPages + 1;
+            } else {
+                statistics.notUsed = statistics.notUsed + 1;
+            }
+            if (rendering.HasBug) {
+                statistics.hasBug = statistics.hasBug + 1;
+            }
+        }
+
+        function resetStatistics() {
+            statistics = {
+                allRenderings: 0,
+                usedOnPages: 0,
+                notUsed: 0, 
+                hasThumbnail: 0,
+                noThumbnail: 0,
+                hasDatasource: 0,
+                noDatasource: 0,
+                hasBug: 0
+            }
+        }
+
+        function renderData(data) {
+            resetStatistics();
+            $.each(data,
+                function (i, rendering) {
+                    rendering.number = i;
+                    updateStatistics(rendering);
+                    $("tbody").append(row(rendering));
+                });
+            renderStaistics()
+        }
+
+
+
+        function updateFilter(text) {
+            $("tbody").html("");
+            resetStatistics();
+            var filteredRenderings = [];
+            $.each(renderings,
+                function (i, rendering) {
+                    if (((!filters.used || filters.notUsed || rendering.LinksCount > 0) &&
+                        (!filters.notUsed || filters.used || rendering.LinksCount == 0)) &&
+
+                        (!filters.hasBug || filters.noBug || rendering.HasBug) &&
+                        (!filters.noBug || filters.hasBug || !rendering.HasBug) &&
+
+                        ((!filters.hasDatasource || filters.noDatasource || rendering.DatasourcePath) &&
+                        (!filters.noDatasource || filters.hasDatasource || !rendering.DatasourcePath)) &&
+                        ((!filters.hasThumbnail || rendering.ImageUrl) &&
+                            (!filters.noThumbnail || !rendering.ImageUrl)) &&
+                        (!filters.isDeactivated || !rendering.IsActive) &&
+                        (!filters.isActive || rendering.IsActive) &&
+
+                        (!text || 
+                            (rendering.Name.toLowerCase().lastIndexOf(text, 0) != -1)
+                        || (rendering.LinksCount > 0 && rendering.Link.Url.lastIndexOf(text, 0) != -1)
+                        || (rendering.Comments && rendering.Comments.toLowerCase().lastIndexOf(text, 0) != -1))
+
+                        && (selectePath.length == 0 || helper.isExist(rendering.ItemPath, selectePath, true))) {
+
+                        rendering.number = i + 1;
+                        filteredRenderings.push(rendering);
+                        $("tbody").append(row(rendering));
+                        updateStatistics(rendering);
+                    };
+                });
+            renderStaistics();
+        }
+
+        function updatelocations() {
+            var selectedLocations = $(".filter-location");
+            selectePath.splice(0, selectePath.length);
+            $.each(selectedLocations,
+                function (i, c) {
+
+                    var el = $(c);
+
+                    if (el.prop("checked")) {
+                        var path = el.attr("data-path");
+                        if (path) {
+                            selectePath.push(path);
+                        }
+                    }
+                });
+
+            updateFilter();
+        }
+
+        function updateActiveIndicator(el, isActive) {
+            if (isActive) {
+                $(el).removeClass("active").addClass("deactivate");
+                $(el).find(".active").css("display", "none");
+                $(el).find(".deactivate").css("display", "block");
+            } else {
+                $(el).removeClass("deactivate").addClass("active");
+                $(el).find(".active").css("display", "block");
+                $(el).find(".deactivate").css("display", "none");
+            }
+        }
+
+        function activateRendering(ids) {
+            $.ajax({
+                url: "/api/sitecore/ComponentsReviewer/ActivateRenderings",
+                    data: { renderingIds: ids },
+                    type: "POST"
+                })
+                .done(function (data) {
+                    updateRenderingsActivation(ids, true);
+                });
+        }
+
+        function savePdfFile(file, isStart, isEnd) {
+            $.ajax({
+                url: "/api/sitecore/ComponentsReviewer/Save",
+                    data: {
+                        imgBase64: file,
+                        isEnd: isEnd,
+                        isStart: isStart
+                    },
+                    type: "POST"
+                })
+                .done(function (data) {
+                    updateRenderingsActivation(ids, true);
+                });
+        }
+
+        function deactivateRendering(ids) {
+            $.ajax({
+                url: "/api/sitecore/ComponentsReviewer/DeactivateRenderings",
+                    data: { renderingIds: ids },
+                    type: "POST"
+                })
+                .done(function (data) {
+                    updateRenderingsActivation(ids, false);
+                });
+        }
+
+        function getRendering(id) {
+            var r = null;
+            $.each(renderings, function (j, rendering) {
+                if (rendering.Id == id) {
+                    r = rendering;
+                    return;
+                }; 
+            });
+
+            return r;
+        }
+         
+        function updateRenderingsActivation(renderingsIds, isActive) {
+            $.each(renderingsIds, function (i, selectedId) {
+                $.each(renderings, function (j, rendering) {
+                    if (rendering.Id == selectedId) {
+                        rendering.IsActive = isActive;
+                    };
+                });
+            });
+        }
+        function changeRenderingsBug(id, hasBug) { 
+                $.each(renderings, function (j, rendering) {
+                    if (rendering.Id == id) {
+                        rendering.HasBug = hasBug;
+                    }; 
+            });
+        }
+         
+        function fillImageElement(currentCount, renderings, table) {
+
+            if (currentCount == 0) {
+                $(".container-statistics").clone().appendTo(table);
+            }
+
+            var length = renderings.length;
+            var k = 0;
+            var to = currentCount + 20 > length ? length : currentCount + 20;
+
+            if (to == length) {
+                console.log("fill the last img");
+            }
+
+            for (var i = currentCount; i < to; i++) {
+                var r = $(renderings[i]);
+                var rHeight = r.height();
+                 
+                if (2200 < (rHeight + table.height())) {
+                    break;
+                }
+                k++;
+                $(r).clone().appendTo(table);
+                
+            }
+
+            return currentCount + k;
+        }
+
+        function updatePdfIndicator(current, length) {
+            var indicator = $("#savePdProcent");
+            var progressBar = $(".progress-bar");
+            var progressBarText = $(".progress-bar span");
+
+            var procent = parseInt((current * 100 / length));
+            var text = current + "/" + length + " components  " + procent + " %";
+
+            indicator.text(text);
+            progressBar.css("width", procent + "%");
+            progressBarText.html(procent + "%");
+
+        }
+
+        function saveRenderingsPage(currentCount, page, renderings, doc) {
+
+            var table = $("#tempContainer");
+            table.html("");
+            var length = renderings.length;
+
+            //if (currentCount > 20) {
+            //    $(".loader").css("display","none");
+            //    doc.save("test.pdf");
+            //    return;
+            //}
+
+            var isStart = currentCount == 0;
+            if (!isStart) {
+                doc.addPage();
+            } else {
+                $(".loader").css("display", "block");
+                updatePdfIndicator(0, length);
+            }
+
+            currentCount = fillImageElement(currentCount, renderings, table);
+            var isEnd = currentCount >= length - 1;
+
+            convasApi(document.querySelector("#tempContainer"), {
+                useCORS: true
+            }).then(canvas => {
+                var data = canvas.toDataURL("image/png");
+
+                var w = table.width();
+                var h = table.height();
+                var k = w / h;
+
+                var pdfWidth = 560;
+                var componentHeight = pdfWidth / k;
+
+                if (isEnd) {
+                    console.log("the last img");
+                }
+                doc.addImage(data, 'PNG', 5, 5, pdfWidth, componentHeight, null, "FAST");
+                updatePdfIndicator(currentCount, length);
+                if (isEnd) {
+                    $(".loader").css("display", "none");
+                    console.log(currentCount + "   Saved Doc");
+                    doc.save("test.pdf");
+                    console.log(currentCount + "   Doc is saved");
+                    table.html("");
+                    return;
+                }
+
+                table.html("");
+                saveRenderingsPage(currentCount, page + 1, renderings, doc);
+            });
+        }
+
+        $(document).on('click', '.save-as-pdf', function () {
+            var doc = new jsPDF("p", "pt", "A4", true);
+            var renderingsElements = $(".toImage");
+            saveRenderingsPage(0, 0, renderingsElements, doc);
+        });
+
+        function openModal(modalTitle, html, footer) {
+            var modal = $("#myModal");
+            $("#myModal").modal({ backdrop: "static" });
+
+            if (footer) {
+                $(".action-button").removeClass("hidden").text(footer.text).click(footer.handler);
+            }
+
+            if (!footer && !$(".action-button").hasClass("hidden")) {
+                $(".action-button").addClass("hidden");
+            }
+
+            modal.find('.modal-title').html(modalTitle);
+            modal.find('.modal-content');
+            modal.find('.modal-body div').html(html);
+        }
+         
+        function updateRenderingsProperties(props) {
+            $.ajax({
+                url: "/api/sitecore/ComponentsReviewer/SaveRenderingsProperties",
+                data:props,
+                type: "POST"
+            })
+                .done(function (data) { });
+        }
+
+        $(document).on('click', '.bugs-indicator.active', function () {
+            var r = $(this);
+            var id = r.attr("data-id");
+            r.find(".deactivate").css("display", "block");
+            r.find(".active").css("display", "none");
+            $(this).removeClass("active").addClass("deactivate");
+            changeRenderingsBug(id, true);
+            var rendering =  getRendering(id);
+            updateRenderingsProperties({
+                Id: id,
+                HasBug: true,
+                Comments:rendering.Comments
+            });  
+        });
+
+        $(document).on('click', '.bugs-indicator.deactivate', function () {
+            var r = $(this);
+            var id = r.attr("data-id"); 
+            r.find(".deactivate").css("display", "none");
+            r.find(".active").css("display", "block");
+            $(this).removeClass("deactivate").addClass("active");
+            changeRenderingsBug(id, false);
+            var rendering = getRendering(id);
+            updateRenderingsProperties({
+                Id: id,
+                HasBug: false,
+                Comments: rendering.Comments
+            }); 
+        });
+
+        $(document).on('click', '.edit-comments', function () {
+            var r = $(this);
+            var commentsPanel = r.parents(".rendering-comments");
+            commentsPanel.find(".comments-input").removeClass("hidden");
+            commentsPanel.find(".comments-text").addClass("hidden");
+            r.addClass("hidden");
+        });
+
+        $(document).on('click', '.cancel-comments', function () {
+            var r = $(this);
+            r.parents(".rendering-comments").find(".comments-input").addClass("hidden");
+            r.parents(".rendering-comments").find(".edit-comments").removeClass("hidden");
+            r.parents(".rendering-comments").find(".comments-text").removeClass("hidden");
+        });
+
+        $(document).on('click', '.save-comments', function () {
+            var r = $(this); 
+            var id = r.attr("data-id");
+
+            var commentPanel = r.parents(".rendering-comments");
+            var inputPanel = r.parents(".comments-input");
+            var commentsText = commentPanel.find(".comments-text");
+             
+            inputPanel.addClass("hidden");
+            commentPanel.find(".edit-comments").removeClass("hidden");
+
+            var comment = inputPanel.find("textarea").val();
+            comment = helper.stringToHtml(comment);
+            commentsText.html(comment).removeClass("hidden");
+
+            var rendering = getRendering(id);
+            updateRenderingsProperties({
+                Id: id,
+                HasBug: rendering.HasBug,
+                Comments: comment
+            });
+        });
+
+        //$(document).on('click', '.save-comments', function () {
+        //    var r = $(this);
+        //    var id = r.attr("data-id"); 
+        //    var comment = r.parents(".comments-input").find("textarea").text();
+        //    var rendering = getRendering(id);
+        //    updateRenderingsProperties({
+        //        Id: id,
+        //        HasBug: rendering.HasBug,
+        //        Comments: comment
+        //    });
+        //});
+
+        $(document).on("click", ".expand-button", function() {
+            $(this).parents(".treenode").find(".child-nodes").removeClass("hidden");
+            $(this).next().removeClass("hidden");
+            $(this).addClass("hidden");
+        });
+
+        $(document).on("click", ".collapse-button",function() {
+            $(this).parents(".treenode").find(".child-nodes").addClass("hidden");
+            $(this).prev().removeClass("hidden");
+            $(this).addClass("hidden");
+        });
+
+
+
+        $('.category-filter').on('change', function () {
+            var path = $(this).attr('data-path');
+            renderCategories(path);
+        });
+
+        $('#hasBug').on('change', function () {
+            filters.hasBug = $(this).prop('checked');
+            updateFilter();
+        });
+
+        $('#noBug').on('change', function () {
+            filters.noBug = $(this).prop('checked');
+            updateFilter();
+        });
+        $('#used-on-page').on('change', function () {
+            filters.used = $(this).prop('checked');
+            updateFilter();
+        });
+
+        $('#not-used').on('change', function () {
+            filters.notUsed = $(this).prop('checked');
+            updateFilter();
+        });
+
+        $('#isDeactivated').on('change', function () {
+            filters.isDeactivated = $(this).prop('checked');
+            updateFilter();
+        });
+
+        $('#isActive').on('change', function () {
+            filters.isActive = $(this).prop('checked');
+            updateFilter();
+        });
+
+        $('#has-thumbnail').on('change', function () {
+            filters.hasThumbnail = $(this).prop('checked');
+            updateFilter();
+        });
+
+        $('#no-thumbnail').on('change', function () {
+            filters.noThumbnail = $(this).prop('checked');
+            updateFilter();
+        });
+
+        $('#has-datasource').on('change', function () {
+            filters.hasDatasource = $(this).prop('checked');
+            updateFilter();
+        });
+
+        $('#no-datasource').on('change', function () {
+            filters.noDatasource = $(this).prop('checked');
+            updateFilter();
+        });
+
+        $(document).on('change', '.filter-epic', function () {
+            var selectedCh = $(this);
+            selectedCh.parents("li").find(".filter-location").prop("checked", selectedCh.prop("checked"));
+            updatelocations();
+        });
+
+        $(document).on('change', '.filter-location', function () {
+            updatelocations();
+        });
+
+
+
+        $(document).on('click', '.activation-status.activeAll', function () {
+            var ids = [];
+            $.each($(".activation-status.deactivate"),
+                function (i, buttonEl) {
+                    ids.push($(buttonEl).attr("data-id"));
+                    updateActiveIndicator(buttonEl, false);
+                });
+            activateRendering(ids);
+        });
+
+        $(document).on('click', '.activation-status.deactivateAll', function () {
+            var ids = [];
+            $.each($(".activation-status.active"),
+                function (i, buttonEl) {
+                    ids.push($(buttonEl).attr("data-id"));
+                    updateActiveIndicator(buttonEl, true);
+                });
+            deactivateRendering(ids);
+        });
+
+        $(document).on('click', '.activation-status.active', function () {
+            var el = $(this);
+            var id = el.attr("data-id");
+            updateActiveIndicator(el, true);
+            deactivateRendering([id]);
+        });
+
+        $(document).on('click', '.activation-status.deactivate', function () {
+            var el = $(this);
+            var id = el.attr("data-id");
+            updateActiveIndicator(el, false);
+            activateRendering([id]);
+        });
+
+        $(document).on("keypress", ".search-textbox", function(i) {
+            var r = $(this);
+            var text = r.val();
+            if (text) {text = text.toLowerCase()}
+            updateFilter(text);
+        });
+
+        $(document).on("click", ".show-all-references .hide-references", function(i) {
+            var r = $(this);
+            var linksContainer = r.parents(".references");
+            linksContainer.find(".all-links").addClass("hidden");
+            linksContainer.find(".first-link").removeClass("hidden");
+            linksContainer.find("button.show-references").removeClass("hidden");
+            linksContainer.find("button.hide-references").addClass("hidden");
+        });
+
+        $(document).on("click", ".show-all-references .show-references",
+            function() {
+                var r = $(this);
+                var linksContainer = r.parents(".references");
+                var allLinks = linksContainer.find(".all-links");
+                linksContainer.find(".show-all-references button.show-references").addClass("hidden");
+                
+                var id = r.attr("data-id");
+
+                $.ajax({ url: "/api/sitecore/ComponentsReviewer/GetAllRefferences?renderingId=" + id })
+                    .done(function (data) {
+                        if (data && data.length > 1) {
+                            linksContainer.find(".first-link").addClass("hidden");
+                            linksContainer.find(".show-all-references button.hide-references").removeClass("hidden");
+                            allLinks.removeClass("hidden");
+                        }
+
+                        $.each(data,
+                            function(i, link) {
+                                var linkHtml =
+                                    '<div class="open-page"><span class="label label-success">Page Url: </span> <span>' +
+                                        link.Url +
+                                        '</span></div>';
+                                allLinks.append(linkHtml);
+                            });
+
+                    });
+            });
+
+      
+        $.ajax({ url: "/api/sitecore/ComponentsReviewer/GetAllRenderings" })
+            .done(function (data) {
+                renderings = data.Renderings;
+                epics = data.Epics;
+                expectedFeatures = data.ExpectedFeature;
+
+                var categoriesList = [];
+
+                $.each(epics, function (i, e) {
+                    $.each(e.ChildLocations, function (j, l) {
+                        if (!helper.isExist(l.Name, categoriesList)) { categoriesList.push(l.Name) }
+                    });
+                });
+
+                renderData(renderings);
+                renderCategories(categoriesList);
+                renderEpics(epics);
+
+                $(document).on("click", ".open-page span", function () {
+                    var url = $(this).html();
+                    var modalTitle = "Page: " + url;
+                    var html = '<div style="height:700px;"><object style="width:100%;height:100%" data="' + url + '"></div>';
+                    openModal(modalTitle, html);
+                });
+            });
+
+
+    });
+</script>
+
+</head>
+<body>
+    
+<div class="loader">
+    <div class="loader-container">
+        <div class="box">
+            <span>
+                <p id="savePdProcent"></p>
+            </span>
+            <div class="progress">
+                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal dynamic-modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none">
+    <div class="modal-dialog" role="document" style="width: 1400px; height: 900px">
+        <div class="modal-content" style="height: 900px">
+            <div class="modal-header">
+                <b>
+                    <h3 class="modal-title" id="myModalLabel"></h3>
+                </b>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="logs-getInfo"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success hidden action-button" data-dismiss="modal"></button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img src="../admin/ComponentsReviewer/images/brand.png" width="30" height="30" alt="Renderings Review Helper">
+            </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a data-toggle="collapse" href="#baseFilterPanel" role="button" aria-expanded="false" aria-controls="baseFilterPanel">Base Filters</a>
+                </li>
+                <li>
+                    <a data-toggle="collapse" href="#locationFilterPanel" role="button" aria-expanded="false" aria-controls="locationFilterPanel">Locations Filters</a>
+                </li>
+                <li >
+                    <a data-toggle="collapse" role="button" aria-expanded="false" aria-controls="locationFilterPanel" class="search-component"> </a>
+                </li>
+            </ul>
+
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="filters-panels">
+    <div class="row filters-container">
+        <div class="col-lg-6">
+            <div class="collapse" id="baseFilterPanel">
+                <div class="card card-body baseFilters">
+                    <!--<ul class="baseFilters"></ul>-->
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="collapse" id="locationFilterPanel">
+                <div class="card card-body epicsFilter">
+                    <!--<div id="treeview12" class="epicsFilter">
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-success padding-10" id="renderingsTable">
+    <div class="panel-heading" style="text-align: center">
+        <span style="float: left;">Rendeings</span>
+        <button class="btn btn-success save-as-pdf">Save as Pdf<span class="glyphicon glyphicon-floppy-save margin-left-10"></span></button>
+    </div>
+    <div class="panel-body">
+        <div class="container-statistics"></div>
+        <br/>
+        <div class="activation-status activeAll" data-id="{{Id}}">
+            <i class="glyphicon glyphicon-ok-circle activeAll"></i> <span>Mark all as used</span></div>
+        <div class="activation-status deactivateAll" data-id="{{Id}}">
+            <i class="glyphicon glyphicon-remove-circle deactivate"></i> <span>Mark all as not used</span>
+        </div>
+
+        <table id="renderings-table" class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Rendering</th>
+                <th scope="col">Properties</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="tempContainer"></div>
+
+
+
+
+
+
+
+</body>
+</html>

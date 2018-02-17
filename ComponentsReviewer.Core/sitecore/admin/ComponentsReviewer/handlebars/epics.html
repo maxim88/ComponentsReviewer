@@ -1,0 +1,26 @@
+﻿
+<ul class="tree">
+{{#each this}}
+<li class="treenode">
+    {{Name}}  <i class="glyphicon glyphicon-plus expand-button"></i>
+    <i class="glyphicon glyphicon-minus collapse-button hidden"></i>
+    <div class="material-switch pull-right">
+        <input id="epicCheckbox_{{Id}}" name="epicCheckbox_{{Id}}" type="checkbox" class="filter-epic" data-id="{{Id}}" data-path="{{Path}}"   />
+        <label for="epicCheckbox_{{Id}}" class="label-default"></label>
+    </div> 
+        <ul class="child-nodes hidden">
+            {{#each ChildLocations}}
+            <li class="treenode">
+                {{Name}}
+                <div class="material-switch pull-right">
+                    <input id="cCheckbox_{{Id}}" name="cCheckbox_{{Id}}" class="filter-location" data-id="{{Id}}" data-path="{{Path}}" type="checkbox" />
+                    <label for="cCheckbox_{{Id}}" class="label-default"></label>
+                </div>
+            </li>
+            {{/each}}
+        </ul> 
+</li>
+
+{{/each}}
+</ul>
+

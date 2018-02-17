@@ -1,0 +1,13 @@
+﻿<h3>Categories</h3>
+<ul class="list-group">
+    {{#each categories}}
+    <li class="list-group-item">
+        {{this}}
+        <div class="material-switch pull-right">
+            <input id="epicCheckbox_{{this}}" name="epicCheckbox_{{this}}" type="checkbox" data-id="{{this}}" data-path="{{this}}" />
+            <label for="epicCheckbox_{{this}}" class="label-default"></label>
+        </div>
+    </li> 
+    
+    {{/each}}
+</ul>   
