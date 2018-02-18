@@ -37,8 +37,7 @@
 
         <ul class="list-group">
             <li class="list-group-item">
-            <div class="rendering-comments">
-                <h4><span class="label label-info">Comments: </span></h4>
+            <div class="rendering-comments"> 
                 <p class="">
                     <i class="edit-comments glyphicon glyphicon-pencil"></i>
                     <span class="comments-text">{{#update_html Comments}}{{/update_html}}</span>
@@ -84,11 +83,12 @@
 
         <div>
             <ul class="list-group">
-                <li class="list-group-item"><span class="label label-default">File Path: </span> {{FilePath}}</li>
+                <li class="list-group-item"><span class="label label-info">File Path: </span> {{FilePath}}</li>
             </ul>
         </div>
         <div>
-            <ul class="list-group">
+            <ul class="list-group"> 
+                <li class="list-group-item"><span class="label label-default">Datasource Template: </span> {{DatasourceTemplateName}}</li>
                 <li class="list-group-item"><span class="label label-default">Datasource Location: </span> {{DatasourcePath}}</li>
                 <li class="list-group-item"><span class="label label-default">Rendering Props Name: </span> {{ParametersTemplateName}}</li>
                 <li class="list-group-item"><span class="label label-default">Template Path: </span> {{TemplatePath}}</li>

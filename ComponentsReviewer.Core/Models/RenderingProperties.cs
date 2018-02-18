@@ -19,7 +19,7 @@ namespace ComponentsReviewer.Models
         public string TemplateName { get; set; }
         public string TemplatePath { get; set; }
         public Guid ParametersTemplateId { get; set; }
-        public Guid ParametersTemplateName { get; set; }
+        public string ParametersTemplateName { get; set; }
         public List<Link> Links { get; set; }
         public Link Link { get; set; }
         public int LinksCount { get; set; }
