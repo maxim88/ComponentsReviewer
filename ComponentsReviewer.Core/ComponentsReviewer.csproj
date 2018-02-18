@@ -73,7 +73,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Config\Include\ComponentsReviewer\zRenderingsAnalyzer.Core.config">
+    <Content Include="App_Config\Include\ComponentsReviewer\zCore.config">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="sitecore\admin\ComponentsReviewer\handlebars\baseFilters.html" />
@@ -82,6 +82,7 @@
     <Content Include="sitecore\admin\ComponentsReviewer\handlebars\epics.html" />
     <Content Include="sitecore\admin\ComponentsReviewer\handlebars\statistics.html" />
     <Content Include="sitecore\admin\ComponentsReviewer\images\brand.png" />
+    <Content Include="sitecore\admin\ComponentsReviewer\images\source.gif" />
     <Content Include="sitecore\admin\ComponentsReviewer\scripts\addimage.js" />
     <Content Include="sitecore\admin\ComponentsReviewer\scripts\adler.js" />
     <Content Include="sitecore\admin\ComponentsReviewer\scripts\bootstrap-carousel.js" />
@@ -145,7 +146,7 @@
     <Content Include="sitecore\admin\ComponentsReviewer\styles\bootstrap\bootstrap.min.css.map" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="sitecore\admin\RenderingsAnalyzer.html" />
+    <Content Include="sitecore\admin\ComponentsReviewer.html" />
     <Content Include="sitecore\admin\ComponentsReviewer\handlebars\tableRow.html" />
     <Content Include="sitecore\admin\ComponentsReviewer\scripts\bootstrap.bundle.min.js" />
     <Content Include="sitecore\admin\ComponentsReviewer\scripts\bootstrap.min.js" />

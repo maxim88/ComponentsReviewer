@@ -346,7 +346,7 @@
             resetStatistics();
             $.each(data,
                 function (i, rendering) {
-                    rendering.number = i;
+                    rendering.number = i + 1;
                     updateStatistics(rendering);
                     $("tbody").append(row(rendering));
                 });
@@ -360,6 +360,7 @@
             $("tbody").html("");
             resetStatistics();
             var filteredRenderings = [];
+            var number = 0;
             $.each(renderings,
                 function (i, rendering) {
                     if (((!filters.used || filters.notUsed || rendering.LinksCount > 0) &&
@@ -382,7 +383,8 @@
 
                         && (selectePath.length == 0 || helper.isExist(rendering.ItemPath, selectePath, true))) {
 
-                        rendering.number = i + 1;
+                        number ++;
+                        rendering.number = number;
                         filteredRenderings.push(rendering);
                         $("tbody").append(row(rendering));
                         updateStatistics(rendering);
