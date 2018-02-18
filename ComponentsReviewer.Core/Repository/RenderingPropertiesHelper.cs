@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using ComponentsReviewer.Models;
 using Sitecore;
+using Sitecore.Data;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
@@ -50,16 +51,16 @@ namespace ComponentsReviewer.Repository
         private static RenderingProperties GetStandardProperties(Item renderingItem)
         {
             try
-            {
+            { 
+
                 var links = GetLinks(renderingItem);
                 var sites = links.Select(s => s.SiteName).Distinct().Where(c=>!string.IsNullOrEmpty(c)).ToList();
                 var obj = new RenderingProperties
                 {
                     Id = renderingItem.ID.Guid,
                     Name = renderingItem.Name,
-                    DatasourcePath = renderingItem[Fields.DatasourceLocation],
+                    DatasourcePath = renderingItem[Fields.DatasourceLocation], 
                     TemplateId = renderingItem.TemplateID.Guid,
-                    TemplateName = renderingItem.TemplateName,
                     TemplatePath = renderingItem.Template.FullName,
                     ItemPath = renderingItem.Paths.FullPath, 
                     Link = links.FirstOrDefault() ?? new Link{ItemName = "[Not Used]"},
@@ -67,7 +68,7 @@ namespace ComponentsReviewer.Repository
                     Sites = sites,
                     ImageUrl = GetThumbnailUrl(renderingItem)
                 };
-                SetDatasourceData(renderingItem, obj);
+                SetDatasource(renderingItem, obj); 
                 return obj;
             }
             catch (Exception e)
@@ -75,6 +76,21 @@ namespace ComponentsReviewer.Repository
                 Log.Error(e.Message, e);
                 return null;
             } 
+        }
+
+        public static void SetDatasource(Item renderingItem, RenderingProperties properties)
+        {
+            var datasourceTemplateName = renderingItem[Fields.DatasourceTemplate];
+            var parametersTemplateName = renderingItem[Fields.ParametersTemplate];
+            var db = Database.GetDatabase(Settings.DatabaseName);
+            if (ID.IsID(datasourceTemplateName))
+            {
+                properties.DatasourceTemplateName = db.GetItem(new ID(datasourceTemplateName))?.Paths.FullPath;
+            }
+            if (ID.IsID(parametersTemplateName))
+            {
+                properties.ParametersTemplateName = db.GetItem(new ID(parametersTemplateName))?.Paths.FullPath;
+            }
         }
         
         public static void SetRenderingStateProperties(RenderingProperties properties)
@@ -129,21 +145,7 @@ namespace ComponentsReviewer.Repository
                     stateItem.Editing.EndEdit();
                 }
             }
-        }
-
-        private static NameValueCollection GetPropertiesFieldValue(NameValueListField field, Guid id)
-        {
-            var properties = field.NameValues.GetValues(id.ToString());
-            var collection = new NameValueCollection();
-            return field.NameValues;
-        }
-
-        private static void SetDatasourceData(Item renderingItem, RenderingProperties properties)
-        {
-            //var ds = renderingItem[Fields.DatasourceLocation];
-
-            //properties.DatasourceTemplateId = ds.
-        }
+        } 
 
         private static string GetThumbnailUrl(Item renderingItem)
         {
