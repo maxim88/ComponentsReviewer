@@ -2,6 +2,7 @@
 using System.Linq;
 using ComponentsReviewer.Models;
 using Sitecore.Data;
+using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
 using Sitecore.StringExtensions;
@@ -19,11 +20,33 @@ namespace ComponentsReviewer.Repository
             var db = Database.GetDatabase(Settings.DatabaseName);
             if (db == null)
             {
-                Log.Error("GetAllRenderings failed: the database {0} cannot be found".FormatWith(Settings.DatabaseName), typeof(RenderingsGetter));
+                Log.Error("ComponentsReviewer *** GetAllRenderings failed: the database {0} cannot be found".FormatWith(Settings.DatabaseName), typeof(LocationsHelper));
                 return new List<Item>();
             }
-            
-            return Settings.RenderingPath.Split(',').Select(id => db.GetItem(id)).Where(item => item != null).ToList();
+
+            var idStr = Settings.RenderingPath;
+            if (!ID.IsID(idStr))
+            { 
+                Log.Error("ComponentsReviewer *** GetAllRenderings failed: settings item id has wrong format", typeof(LocationsHelper));
+                return new List<Item>();
+            }
+
+
+            var settingsItem = db.GetItem(new ID(idStr));
+            if (settingsItem == null)
+            {
+                Log.Error("ComponentsReviewer *** GetAllRenderings failed: settings item cannot be found", typeof(LocationsHelper));
+                return new List<Item>();
+            }
+
+            MultilistField roots = settingsItem.Fields[Fields.SettingsItem.RootItems];
+            if (roots == null)
+            {
+                Log.Error("ComponentsReviewer *** GetAllRenderings failed: filed 'Root Items' is null", typeof(LocationsHelper));
+                return new List<Item>();
+            }
+
+            return roots.GetItems().ToList(); 
         } 
 
         public static List<Location> GetEpics()

@@ -88,10 +88,22 @@
         </div>
         <div>
             <ul class="list-group"> 
-                <li class="list-group-item"><span class="label label-default">Datasource Template: </span> {{DatasourceTemplateName}}</li>
-                <li class="list-group-item"><span class="label label-default">Datasource Location: </span> {{DatasourcePath}}</li>
-                <li class="list-group-item"><span class="label label-default">Rendering Props Name: </span> {{ParametersTemplateName}}</li>
-                <li class="list-group-item"><span class="label label-default">Template Path: </span> {{TemplatePath}}</li>
+                <li class="list-group-item">
+                    <span class="label label-default">Datasource Template: </span>
+                    {{#if DatasourceTemplateName}} {{DatasourceTemplateName}} {{else}} [No Datasource]{{/if}}
+                </li>
+                <li class="list-group-item">
+                    <span class="label label-default">Datasource Location: </span>
+                    {{#if DatasourcePath}} {{DatasourcePath}}{{else}} [No Datasource Location]{{/if}}
+                </li>
+                <li class="list-group-item">
+                    <span class="label label-default">Rendering Properties Template: </span>
+                    {{#if ParametersTemplateName}} {{ParametersTemplateName}}{{else}} [No Rendering Properties]{{/if}}
+                </li>
+                <li class="list-group-item">
+                    <span class="label label-default">Template Path: </span>
+                    {{#if TemplatePath}} {{TemplatePath}}{{/if}}
+                </li>
             </ul>
         </div>
         <div>
